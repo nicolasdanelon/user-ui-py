@@ -1,5 +1,5 @@
-import tkinter
-import tkinter.messagebox
+import tkinter as tk
+from tkinter import ttk, messagebox
 import customtkinter
 
 customtkinter.set_appearance_mode("System")
@@ -36,15 +36,20 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
                                                                command=self.change_scaling_event)
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
+        self.scaling_optionemenu.set("100%")
 
-        # create textbox
-        self.textbox = customtkinter.CTkTextbox(self, width=250)
+        # table
+        cols = ('ID', 'Nombre', 'Email')
+        self.textbox = ttk.Treeview(columns=cols, show='headings')
         self.textbox.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
 
-        # set default values
+        tempList = [['Jim', '0.33'], ['Dave', '0.67'], ['James', '0.67'], ['Eden', '0.5']]
 
-        self.scaling_optionemenu.set("100%")
-        self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
+        for i, (name, score) in enumerate(tempList, start=1):
+            self.textbox.insert("", "end", values=(i, name, score))
+
+        for col in cols:
+            self.textbox.heading(col, text=col)
 
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
