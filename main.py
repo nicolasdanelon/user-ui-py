@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from user import User
+from lib import isValid
+import db, traceback, datetime
 import customtkinter
 
 customtkinter.set_appearance_mode("System")
@@ -25,10 +28,10 @@ class App(customtkinter.CTk):
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="User admin", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event, text="View users")
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.table_button_event, text="View users")
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=self.open_input_dialog_event, text="Add user")
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=self.form_button_event, text="Add user")
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
 
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
@@ -51,6 +54,37 @@ class App(customtkinter.CTk):
         for col in cols:
             self.table.heading(col, text=col)
 
+        self.form = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+
+        self.name = customtkinter.CTkLabel(self.form, text="Name")
+        self.name.grid(row=2, column=0)
+
+        self.name_field = customtkinter.CTkEntry(self.form)
+        self.name_field.grid(row=2, column=1, ipadx=100, pady=5)
+
+        self.email = customtkinter.CTkLabel(self.form, text="E-mail")
+        self.email.grid(row=1, column=0)
+
+        self.email_field = customtkinter.CTkEntry(self.form)
+        self.email_field.bind("<Return>", command=self.validate_create_user_form)
+        self.email_field.grid(row=1, column=1, ipadx=100, pady=5)
+
+        self.submit_button = customtkinter.CTkButton(self.form, command=self.validate_create_user_form, text="Create user")
+        self.submit_button.grid(row=3, column=1, padx=20, pady=10)
+
+
+
+    def validate_create_user_form(self):
+        if (self.email_field.get() != "" and self.name_field.get() != "" and isValid(self.email_field.get())):
+            usr = User(id=db.getNewId(), email=self.email_field.get(), name=self.name_field.get(), created_at=datetime.datetime.now())
+            # print('new user added: ', usr.serialize())
+            db.insert(usr)
+
+            self.email_field.delete(0, tk.END)
+            self.email_field.insert(0, "")
+            self.name_field.delete(0, tk.END)
+            self.name_field.insert(0, "")
+
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
         print("CTkInputDialog:", dialog.get_input())
@@ -62,6 +96,21 @@ class App(customtkinter.CTk):
     def sidebar_button_event(self):
         print("sidebar_button click")
 
+    def select_frame_by_name(self, name):
+        if name == "table":
+            self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        else:
+            self.table.grid_forget()
+        if name == "form":
+            self.form.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        else:
+            self.form.grid_forget()
+
+    def table_button_event(self):
+        self.select_frame_by_name("table")
+
+    def form_button_event(self):
+        self.select_frame_by_name("form")
 
 if __name__ == "__main__":
     app = App()

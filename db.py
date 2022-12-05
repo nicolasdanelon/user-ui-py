@@ -14,14 +14,14 @@ def connect():
     #     usr = User(getNewId(), i['name'], i['email'], i['created_at'])
     #     insert(usr)
 
-def insert(user):
+def insert(user: User):
     conn = sqlite3.connect('database')
     cur = conn.cursor()
     cur.execute("INSERT INTO users VALUES (?,?,?,?)", (
         user.id,
-        user.available,
-        user.title,
-        user.timestamp
+        user.name,
+        user.email,
+        user.created_at
     ))
     conn.commit()
     conn.close()
@@ -38,7 +38,7 @@ def view():
     conn.close()
     return users
 
-def update(user):
+def update(user: User):
     conn = sqlite3.connect('database')
     cur = conn.cursor()
     cur.execute("UPDATE users SET name=?, email=? WHERE id=?", (user.name, user.eamail, user.id))
