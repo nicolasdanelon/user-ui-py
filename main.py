@@ -42,14 +42,13 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.set("100%")
 
         # table
-        cols = ('ID', 'Nombre', 'Email')
+        cols = ('ID', 'Nombre', 'Email', 'Created at')
         self.table = ttk.Treeview(columns=cols, show='headings')
         self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
 
-        tempList = [['Jim', '0.33'], ['Dave', '0.67'], ['James', '0.67'], ['Eden', '0.5']]
-
-        for i, (name, score) in enumerate(tempList, start=1):
-            self.table.insert("", "end", values=(i, name, score))
+        users = [u.serialize() for u in db.view()]
+        for u in users:
+            self.table.insert("", "end", values=(u['id'], u['name'], u['email'], u['created_at']))
 
         for col in cols:
             self.table.heading(col, text=col)
