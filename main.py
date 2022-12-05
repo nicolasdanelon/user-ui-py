@@ -28,7 +28,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event, text="View users")
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
 
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event, text="Add user")
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=self.open_input_dialog_event, text="Add user")
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
 
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
@@ -40,16 +40,16 @@ class App(customtkinter.CTk):
 
         # table
         cols = ('ID', 'Nombre', 'Email')
-        self.textbox = ttk.Treeview(columns=cols, show='headings')
-        self.textbox.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.table = ttk.Treeview(columns=cols, show='headings')
+        self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
 
         tempList = [['Jim', '0.33'], ['Dave', '0.67'], ['James', '0.67'], ['Eden', '0.5']]
 
         for i, (name, score) in enumerate(tempList, start=1):
-            self.textbox.insert("", "end", values=(i, name, score))
+            self.table.insert("", "end", values=(i, name, score))
 
         for col in cols:
-            self.textbox.heading(col, text=col)
+            self.table.heading(col, text=col)
 
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
