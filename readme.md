@@ -37,3 +37,5 @@ make run
 sources:
  - layout: https://github.com/TomSchimansky/CustomTkinter/blob/master/examples/complex_example.py
  - table: https://stackoverflow.com/a/50651988/1504286
+ - installer? https://github.com/bradtraversy/part_manager
+ - https://medium.com/@hillarywando/how-to-create-a-basic-crud-api-using-python-flask-cd68ef5fd7e3
