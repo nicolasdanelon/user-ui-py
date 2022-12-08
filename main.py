@@ -42,16 +42,7 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.set("100%")
 
         # table
-        cols = ('ID', 'Nombre', 'Email', 'Created at')
-        self.table = ttk.Treeview(columns=cols, show='headings')
-        self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
-
-        users = [u.serialize() for u in db.view()]
-        for u in users:
-            self.table.insert("", "end", values=(u['id'], u['name'], u['email'], u['created_at']))
-
-        for col in cols:
-            self.table.heading(col, text=col)
+        self.print_table()
 
         self.form = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
 
@@ -71,29 +62,45 @@ class App(customtkinter.CTk):
         self.submit_button = customtkinter.CTkButton(self.form, command=self.validate_create_user_form, text="Create user")
         self.submit_button.grid(row=3, column=1, padx=20, pady=10)
 
+    def print_table(self):
+        cols = ('ID', 'Nombre', 'Email', 'Created at')
+        self.table = ttk.Treeview(columns=cols, show='headings')
+        self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.table.bind("<Double-1>", self.double_click_table_item)
 
+        users = [u.serialize() for u in db.view()]
+        for u in users:
+            self.table.insert("", "end", values=(u['id'], u['name'], u['email'], u['created_at']))
+
+        for col in cols:
+            self.table.heading(col, text=col)
 
     def validate_create_user_form(self):
         if (self.email_field.get() != "" and self.name_field.get() != "" and isValid(self.email_field.get())):
-            usr = User(id=db.getNewId(), email=self.email_field.get(), name=self.name_field.get(), created_at=datetime.datetime.now())
+            usr = User(
+                id = db.getNewId(),
+                email = self.email_field.get(),
+                name = self.name_field.get(),
+                created_at = datetime.datetime.now()
+            )
             # print('new user added: ', usr.serialize())
             db.insert(usr)
+
+            self.print_table()
 
             self.email_field.delete(0, tk.END)
             self.email_field.insert(0, "")
             self.name_field.delete(0, tk.END)
             self.name_field.insert(0, "")
 
-    def open_input_dialog_event(self):
-        dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
-        print("CTkInputDialog:", dialog.get_input())
+    def double_click_table_item(self, event):
+        item = self.table.selection()
+        for i in item:
+            print("you clicked on", self.table.item(i, "values")[0])
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
-
-    def sidebar_button_event(self):
-        print("sidebar_button click")
 
     def select_frame_by_name(self, name):
         if name == "table":
