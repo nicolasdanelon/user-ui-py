@@ -193,7 +193,8 @@ class App(customtkinter.CTk):
         if name == "edit_form":
             self.edit_form.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
         else:
-            self.edit_form.grid_forget()
+            if self.edit_form is not None:
+                self.edit_form.grid_forget()
 
 
     def table_button_event(self):
