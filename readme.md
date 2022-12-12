@@ -1,6 +1,6 @@
 # UI Demo: Python, TKinter, CustomTKinter & SLQLite
 
-Move the mouse so your computer don't get lock.
+### This is just a simple demo, do not use in production. DO NOT READ THE CODE!
 
 ### Install python3
 ```
