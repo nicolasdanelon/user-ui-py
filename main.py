@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from user import User
 from lib import isValid
 import db, traceback, datetime
+from time import sleep
 import customtkinter
 
 customtkinter.set_appearance_mode("System")
@@ -15,6 +16,7 @@ class App(customtkinter.CTk):
         # configure window
         self.title("User admin interface demo")
         self.geometry(f"{1100}x{580}")
+        self.edit_id_field_value=""
 
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
@@ -41,6 +43,8 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
         self.scaling_optionemenu.set("100%")
 
+        self.edit_form = None
+
         # table
         self.print_table()
 
@@ -63,7 +67,7 @@ class App(customtkinter.CTk):
         self.submit_button.grid(row=3, column=1, padx=20, pady=10)
 
     def print_table(self):
-        cols = ('ID', 'Nombre', 'Email', 'Created at')
+        cols = ('ID', 'Email', 'Name', 'Created at')
         self.table = ttk.Treeview(columns=cols, show='headings')
         self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.table.bind("<Double-1>", self.double_click_table_item)
@@ -93,10 +97,53 @@ class App(customtkinter.CTk):
             self.name_field.delete(0, tk.END)
             self.name_field.insert(0, "")
 
+    def print_edit_form(self):
+        self.edit_form = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+
+        self.edit_name = customtkinter.CTkLabel(self.edit_form, text="Name ")
+        self.edit_name.grid(row=3, column=0)
+        self.edit_name_field = customtkinter.CTkEntry(self.edit_form)
+        self.edit_name_field.grid(row=3, column=1, ipadx=100, pady=5)
+
+        self.edit_email = customtkinter.CTkLabel(self.edit_form, text="E-mail ")
+        self.edit_email.grid(row=2, column=0)
+        self.edit_email_field = customtkinter.CTkEntry(self.edit_form)
+        self.edit_email_field.grid(row=2, column=1, ipadx=100, pady=5)
+
+        self.edit_id = customtkinter.CTkLabel(self.edit_form, text="ID")
+        self.edit_id.grid(row=1, column=0)
+
+        self.edit_id_field = customtkinter.CTkEntry(self.edit_form, placeholder_text=self.edit_id_field_value)
+        self.edit_id_field.grid(row=1, column=1, ipadx=100, pady=5)
+
+        self.go_back_button = customtkinter.CTkButton(self.edit_form, command=self.table_button_event, text="Cancel")
+        self.go_back_button.grid(row=4, column=0, padx=5, pady=10)
+
+        self.edit_submit_button = customtkinter.CTkButton(self.edit_form, command=self.update_user_form, text="Update user")
+        self.edit_submit_button.grid(row=4, column=1, padx=20, pady=10)
+
     def double_click_table_item(self, event):
         item = self.table.selection()
+        self.print_edit_form()
+        self.edit_name_field.delete(0, tk.END)
+        self.edit_email_field.delete(0, tk.END)
+        self.edit_id_field.delete(0, tk.END)
+
         for i in item:
-            print("you clicked on", self.table.item(i, "values")[0])
+            self.edit_name_field.insert(0, self.table.item(i, "values")[2])
+            self.edit_email_field.insert(0, self.table.item(i, "values")[1])
+            self.edit_id_field.insert(0, self.table.item(i, "values")[0])
+            
+            #self.edit_id_field_value = self.table.item(i, "values")[0]
+            print(self.table.item(i, "values")[0])
+
+        self.select_frame_by_name("edit_form")
+        sleep(1)
+        self.edit_name.focus_set()
+        self.edit_email_field.focus_set()
+
+    def update_user_form(self):
+        print(1)
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
@@ -111,6 +158,11 @@ class App(customtkinter.CTk):
             self.form.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
         else:
             self.form.grid_forget()
+        if name == "edit_form":
+            self.edit_form.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        else:
+            self.edit_form.grid_forget()
+
 
     def table_button_event(self):
         self.select_frame_by_name("table")
