@@ -41,7 +41,7 @@ def view():
 def update(user: User):
     conn = sqlite3.connect('database')
     cur = conn.cursor()
-    cur.execute("UPDATE users SET name=?, email=? WHERE id=?", (user.name, user.eamail, user.id))
+    cur.execute("UPDATE users SET name=?, email=? WHERE id=?", (user.name, user.email, user.id))
     conn.commit()
     conn.close()
 
