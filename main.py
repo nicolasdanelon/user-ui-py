@@ -113,8 +113,11 @@ class App(customtkinter.CTk):
         self.edit_id = customtkinter.CTkLabel(self.edit_form, text="ID")
         self.edit_id.grid(row=1, column=0)
 
-        self.edit_id_field = customtkinter.CTkEntry(self.edit_form, placeholder_text=self.edit_id_field_value)
-        self.edit_id_field.grid(row=1, column=1, ipadx=100, pady=5)
+        self.edit_id_field = customtkinter.CTkLabel(self.edit_form, text=self.edit_id_field_value, anchor="w")
+        self.edit_id_field.grid(row=1, column=1, ipadx=135, pady=5)
+
+        # self.edit_id_field = customtkinter.CTkEntry(self.edit_form, placeholder_text=self.edit_id_field_value)
+        # self.edit_id_field.grid(row=1, column=1, ipadx=100, pady=5)
 
         self.go_back_button = customtkinter.CTkButton(self.edit_form, command=self.table_button_event, text="Cancel")
         self.go_back_button.grid(row=4, column=0, padx=5, pady=10)
@@ -127,15 +130,16 @@ class App(customtkinter.CTk):
         self.print_edit_form()
         self.edit_name_field.delete(0, tk.END)
         self.edit_email_field.delete(0, tk.END)
-        self.edit_id_field.delete(0, tk.END)
+        # self.edit_id_field.delete(0, tk.END)
 
         for i in item:
             self.edit_name_field.insert(0, self.table.item(i, "values")[2])
             self.edit_email_field.insert(0, self.table.item(i, "values")[1])
-            self.edit_id_field.insert(0, self.table.item(i, "values")[0])
-            
-            #self.edit_id_field_value = self.table.item(i, "values")[0]
-            print(self.table.item(i, "values")[0])
+            # self.edit_id_field.insert(0, self.table.item(i, "values")[0])
+            self.edit_id_field.configure(text = self.table.item(i, "values")[0])
+
+            # print(self.table.item(i, "values")[0])
+            # print(self.edit_id_field_value)
 
         self.select_frame_by_name("edit_form")
         sleep(1)
