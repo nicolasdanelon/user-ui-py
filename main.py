@@ -49,6 +49,7 @@ class App(customtkinter.CTk):
         self.print_table()
 
         self.form = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.form.label = customtkinter.CTkLabel(self.form, text="Create user", font=("Arial", 20)).grid(row=0, columnspan=3)
 
         self.name = customtkinter.CTkLabel(self.form, text="Name")
         self.name.grid(row=2, column=0)
@@ -68,8 +69,13 @@ class App(customtkinter.CTk):
 
     def print_table(self):
         cols = ('ID', 'Email', 'Name', 'Created at')
+        self.table_wrapper = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.table_wrapper_label = customtkinter.CTkLabel(self.table_wrapper, text="View all users", font=("Arial", 20))
+        self.table_wrapper_label.grid(row=0, column=0, columnspan=3)
+
         self.table = ttk.Treeview(columns=cols, show='headings')
-        self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        #self.table.grid(row=1, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.table.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
         self.table.bind("<Double-1>", self.double_click_table_item)
 
         users = [u.serialize() for u in db.view()]
@@ -134,6 +140,8 @@ class App(customtkinter.CTk):
     def print_edit_form(self):
         self.edit_form = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
 
+        customtkinter.CTkLabel(self.edit_form, text="Edit user", font=("Arial", 20)).grid(row=0, columnspan=3)
+
         self.edit_name = customtkinter.CTkLabel(self.edit_form, text="Name ")
         self.edit_name.grid(row=3, column=0)
         self.edit_name_field = customtkinter.CTkEntry(self.edit_form)
@@ -183,9 +191,9 @@ class App(customtkinter.CTk):
 
     def select_frame_by_name(self, name):
         if name == "table":
-            self.table.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+            self.table_wrapper.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
         else:
-            self.table.grid_forget()
+            self.table_wrapper.grid_forget()
         if name == "form":
             self.form.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
         else:
@@ -193,7 +201,8 @@ class App(customtkinter.CTk):
         if name == "edit_form":
             self.edit_form.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
         else:
-            self.edit_form.grid_forget()
+            if self.edit_form is not None:
+                self.edit_form.grid_forget()
 
 
     def table_button_event(self):
