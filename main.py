@@ -9,10 +9,12 @@ import datetime
 import db
 from lib import isValid
 from user import User
+import logging
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
+logging.basicConfig(level=logging.INFO)
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -212,7 +214,14 @@ class App(customtkinter.CTk):
     def show_edit_user_form(self):
         self.show_section_by_name("form")
 
+def main():
+    try:
+        logging.info("Program started")
+        app = App()
+        app.mainloop()
+    except Exception as e:
+        logging.error("An error occurred: %s", e)
+        raise
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    main()
